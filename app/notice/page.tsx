@@ -43,7 +43,66 @@ export default function NoticePage() {
           </a>
         </div>
 
-        {/* 이하 기존 공지사항 코드 그대로 */}
+        <div
+          style={{
+            background: "white",
+            borderRadius: "12px",
+            padding: "24px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+            marginBottom: "24px",
+          }}
+        >
+          <h2 style={{ marginTop: 0 }}>공지 목록</h2>
+          <ul style={{ lineHeight: 1.8, paddingLeft: "20px" }}>
+            <li>3월 정기 소독 일정 안내</li>
+            <li>지하주차장 조명 교체 작업 공지</li>
+            <li>승강기 정기 점검 안내</li>
+          </ul>
+        </div>
+
+        <div
+          style={{
+            background: "white",
+            borderRadius: "12px",
+            padding: "24px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+          }}
+        >
+          <h2 style={{ marginTop: 0 }}>공지 등록</h2>
+          <div style={{ display: "grid", gap: "12px" }}>
+            <input
+              placeholder="공지 제목"
+              style={{
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+              }}
+            />
+            <textarea
+              placeholder="공지 내용을 입력하세요"
+              rows={6}
+              style={{
+                padding: "10px",
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                resize: "vertical",
+              }}
+            />
+            <button
+              style={{
+                padding: "12px 16px",
+                border: "none",
+                borderRadius: "8px",
+                background: "#2563eb",
+                color: "white",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              공지 등록
+            </button>
+          </div>
+        </div>
       </div>
     </main>
   );
