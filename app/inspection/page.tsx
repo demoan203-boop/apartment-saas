@@ -8,19 +8,41 @@ export default function InspectionPage() {
         fontFamily: "sans-serif",
       }}
     >
-      <div
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-        }}
-      >
-        <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-          시설점검
-        </h1>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginBottom: "20px",
+            gap: "12px",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
+              시설점검
+            </h1>
 
-        <p style={{ color: "#555", marginBottom: "30px" }}>
-          아파트 주요 시설의 점검 현황을 확인하고 기록하는 화면입니다.
-        </p>
+            <p style={{ color: "#555", margin: 0 }}>
+              아파트 주요 시설의 점검 현황을 확인하고 기록하는 화면입니다.
+            </p>
+          </div>
+
+          <a
+            href="/dashboard"
+            style={{
+              padding: "10px 16px",
+              background: "#2563eb",
+              color: "white",
+              textDecoration: "none",
+              borderRadius: "8px",
+              fontWeight: "bold",
+            }}
+          >
+            대시보드로 이동
+          </a>
+        </div>
 
         <div
           style={{
@@ -140,64 +162,6 @@ export default function InspectionPage() {
               점검 기록 보기
             </button>
           </div>
-
-           <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            }}
-          >
-            <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>
-              기타 설비
-            </h2>
-            <p>점검 상태: 점검 필요</p>
-            <p>최근 점검일: 2026-03-11</p>
-            <button
-              style={{
-                marginTop: "15px",
-                padding: "10px 16px",
-                border: "none",
-                borderRadius: "8px",
-                background: "#0070f3",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              점검 기록 보기
-            </button>
-          </div>
-
-           <div
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              padding: "20px",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            }}
-          >
-            <h2 style={{ fontSize: "20px", marginBottom: "10px" }}>
-              추가
-            </h2>
-            <p>점검 상태:     </p>
-            <p>최근 점검일:        </p>
-            <button
-              style={{
-                marginTop: "15px",
-                padding: "10px 16px",
-                border: "none",
-                borderRadius: "8px",
-                background: "#0070f3",
-                color: "white",
-                cursor: "pointer",
-              }}
-            >
-              기록 추가   +  
-            </button>
-          </div>
-
-
         </div>
       </div>
     </main>
