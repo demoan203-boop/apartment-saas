@@ -1,4 +1,4 @@
-export default function MaintenancePage() {
+export default function NoticePage() {
   return (
     <main
       style={{
@@ -8,7 +8,7 @@ export default function MaintenancePage() {
         fontFamily: "sans-serif",
       }}
     >
-      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
         <div
           style={{
             display: "flex",
@@ -21,11 +21,10 @@ export default function MaintenancePage() {
         >
           <div>
             <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-              유지보수
+              공지사항
             </h1>
-
             <p style={{ color: "#555", margin: 0 }}>
-              시설 수리 및 교체 이력을 관리하는 페이지입니다.
+              단지 공지와 안내문을 등록하고 관리하는 페이지입니다.
             </p>
           </div>
 
@@ -44,7 +43,7 @@ export default function MaintenancePage() {
           </a>
         </div>
 
-        {/* 이하 기존 유지보수 코드 그대로 */}
+        {/* 이하 기존 공지사항 코드 그대로 */}
       </div>
     </main>
   );
