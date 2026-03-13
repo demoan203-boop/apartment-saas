@@ -72,7 +72,6 @@ export default function DashboardPage() {
         flexDirection: isMobile ? "column" : "row",
       }}
     >
-      {/* 모바일 상단 헤더 */}
       {isMobile && (
         <div
           style={{
@@ -105,7 +104,6 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* 좌측 메뉴 / 모바일 드롭다운 메뉴 */}
       {(!isMobile || menuOpen) && (
         <aside
           style={{
@@ -145,7 +143,6 @@ export default function DashboardPage() {
         </aside>
       )}
 
-      {/* 본문 */}
       <section
         style={{
           flex: 1,
@@ -173,7 +170,6 @@ export default function DashboardPage() {
           주요 업무 현황을 확인하세요.
         </p>
 
-        {/* 요약 카드 */}
         <div
           style={{
             display: "grid",
@@ -209,7 +205,6 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* 빠른 이동 */}
         <div
           style={{
             ...cardStyle,
@@ -238,7 +233,6 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* 최근 공지사항 */}
         <div
           style={{
             ...cardStyle,

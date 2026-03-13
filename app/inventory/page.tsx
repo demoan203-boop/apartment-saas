@@ -1,239 +1,88 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-type InventoryItem = {
-  id: number;
-  name: string;
-  category: string;
-  type: string;
-  price: number;
-  stockIn: number;
-  used: number;
-  location: string;
-  usage: string;
+type Resident = {
+  building: string;
+  unit: string;
+  resident: string;
   status: string;
+  moveIn: string;
+  moveOut: string;
+  note: string;
 };
 
-export default function InventoryPage() {
-  const [items, setItems] = useState<InventoryItem[]>([
+export default function ResidentsPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  const residents: Resident[] = [
     {
-      id: 1,
-      name: "LED 전구 12W",
-      category: "전기자재",
-      type: "재고",
-      price: 3500,
-      stockIn: 100,
-      used: 28,
-      location: "관리창고 A",
-      usage: "공용부 복도 조명 교체",
-      status: "정상",
+      building: "101동",
+      unit: "101호",
+      resident: "김민수",
+      status: "거주중",
+      moveIn: "2026-03-01",
+      moveOut: "-",
+      note: "정상 거주",
     },
     {
-      id: 2,
-      name: "수도 패킹",
-      category: "배관자재",
-      type: "재고",
-      price: 1200,
-      stockIn: 50,
-      used: 18,
-      location: "설비창고",
-      usage: "세대 누수 보수",
-      status: "정상",
+      building: "101동",
+      unit: "102호",
+      resident: "이서연",
+      status: "신규입주",
+      moveIn: "2026-03-10",
+      moveOut: "-",
+      note: "입주 완료",
     },
     {
-      id: 3,
-      name: "소화기 압력게이지",
-      category: "소방자재",
-      type: "재고",
-      price: 8500,
-      stockIn: 20,
-      used: 6,
-      location: "소방보관실",
-      usage: "소방 설비 점검 교체",
-      status: "정상",
+      building: "101동",
+      unit: "103호",
+      resident: "박지훈",
+      status: "이사예정",
+      moveIn: "2024-02-01",
+      moveOut: "2026-03-20",
+      note: "퇴거 예정",
     },
     {
-      id: 4,
-      name: "승강기 버튼 모듈",
-      category: "승강기부품",
-      type: "재고",
-      price: 45000,
-      stockIn: 10,
-      used: 7,
-      location: "유지보수실",
-      usage: "승강기 버튼 불량 교체",
-      status: "부족",
+      building: "102동",
+      unit: "201호",
+      resident: "-",
+      status: "공실",
+      moveIn: "-",
+      moveOut: "-",
+      note: "신규 모집중",
     },
     {
-      id: 5,
-      name: "청소용 세제",
-      category: "청소용품",
-      type: "재고",
-      price: 9800,
-      stockIn: 30,
-      used: 22,
-      location: "관리창고 B",
-      usage: "공용부 청소",
-      status: "부족",
+      building: "102동",
+      unit: "202호",
+      resident: "최유진",
+      status: "거주중",
+      moveIn: "2025-11-15",
+      moveOut: "-",
+      note: "정상 거주",
     },
-    {
-      id: 6,
-      name: "예초기",
-      category: "조경장비",
-      type: "시설자산",
-      price: 280000,
-      stockIn: 1,
-      used: 0,
-      location: "장비보관실",
-      usage: "단지 조경 관리",
-      status: "운용중",
-    },
-  ]);
-
-  const [form, setForm] = useState({
-    type: "재고",
-    name: "",
-    category: "",
-    price: "",
-    stockIn: "",
-    used: "",
-    location: "",
-    usage: "",
-    status: "정상",
-    note: "",
-  });
-
-  const remainPreview =
-    Math.max(Number(form.stockIn || 0) - Number(form.used || 0), 0);
-
-  const getRemain = (item: InventoryItem) => {
-    return Math.max(item.stockIn - item.used, 0);
-  };
-
-  const getAutoStatus = (item: InventoryItem) => {
-    if (item.type === "시설자산") {
-      return item.status || "운용중";
-    }
-
-    const remain = getRemain(item);
-
-    if (remain === 0) return "품절";
-    if (remain <= 10) return "부족";
-    return "정상";
-  };
+  ];
 
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "정상":
-      case "운용중":
-        return {
-          background: "#dcfce7",
-          color: "#166534",
-        };
-      case "부족":
-        return {
-          background: "#fef3c7",
-          color: "#92400e",
-        };
-      case "품절":
-        return {
-          background: "#fee2e2",
-          color: "#b91c1c",
-        };
-      case "수리필요":
-        return {
-          background: "#fee2e2",
-          color: "#b91c1c",
-        };
+      case "거주중":
+        return { background: "#dcfce7", color: "#166534" };
+      case "신규입주":
+        return { background: "#dbeafe", color: "#1d4ed8" };
+      case "이사예정":
+        return { background: "#fef3c7", color: "#92400e" };
+      case "공실":
+        return { background: "#fee2e2", color: "#b91c1c" };
       default:
-        return {
-          background: "#e5e7eb",
-          color: "#374151",
-        };
+        return { background: "#e5e7eb", color: "#374151" };
     }
-  };
-
-  const totalAssetValue = useMemo(() => {
-    return items.reduce((sum, item) => {
-      return sum + item.price * getRemain(item);
-    }, 0);
-  }, [items]);
-
-  const lowStockCount = useMemo(() => {
-    return items.filter((item) => item.type === "재고" && getRemain(item) <= 10)
-      .length;
-  }, [items]);
-
-  const handleFormChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleAddItem = () => {
-    if (!form.name.trim()) {
-      alert("품목명을 입력하세요.");
-      return;
-    }
-
-    const stockInNum = Number(form.stockIn || 0);
-    const usedNum = Number(form.used || 0);
-    const priceNum = Number(form.price || 0);
-
-    if (usedNum > stockInNum) {
-      alert("사용수량은 입고수량보다 클 수 없습니다.");
-      return;
-    }
-
-    const newItem: InventoryItem = {
-      id: Date.now(),
-      type: form.type,
-      name: form.name,
-      category: form.category,
-      price: priceNum,
-      stockIn: stockInNum,
-      used: usedNum,
-      location: form.location,
-      usage: form.usage,
-      status: form.status,
-    };
-
-    setItems((prev) => [newItem, ...prev]);
-
-    setForm({
-      type: "재고",
-      name: "",
-      category: "",
-      price: "",
-      stockIn: "",
-      used: "",
-      location: "",
-      usage: "",
-      status: "정상",
-      note: "",
-    });
-  };
-
-  const handleUsedChange = (id: number, value: string) => {
-    const usedValue = Number(value || 0);
-
-    setItems((prev) =>
-      prev.map((item) => {
-        if (item.id !== id) return item;
-
-        const safeUsed = Math.min(Math.max(usedValue, 0), item.stockIn);
-
-        return {
-          ...item,
-          used: safeUsed,
-        };
-      })
-    );
   };
 
   return (
@@ -241,27 +90,27 @@ export default function InventoryPage() {
       style={{
         minHeight: "100vh",
         background: "#f5f7fb",
-        padding: "40px",
+        padding: isMobile ? "20px" : "40px",
         fontFamily: "sans-serif",
       }}
     >
-      <div style={{ maxWidth: "1300px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: isMobile ? "flex-start" : "center",
+            flexDirection: isMobile ? "column" : "row",
             marginBottom: "20px",
             gap: "12px",
-            flexWrap: "wrap",
           }}
         >
           <div>
-            <h1 style={{ fontSize: "32px", marginBottom: "10px" }}>
-              시설자산·재고관리
+            <h1 style={{ fontSize: isMobile ? "26px" : "32px", marginBottom: "10px" }}>
+              입주민관리
             </h1>
             <p style={{ color: "#555", margin: 0 }}>
-              아파트 시설자산, 소모품, 유지보수 자재의 보유 현황과 사용 잔량을 관리합니다.
+              동·호수별 거주 상태와 입주/이사 현황을 관리합니다.
             </p>
           </div>
 
@@ -280,107 +129,46 @@ export default function InventoryPage() {
           </a>
         </div>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-            gap: "16px",
-            marginBottom: "28px",
-          }}
-        >
-          <div style={summaryCardStyle}>
-            <div style={summaryLabelStyle}>총 품목 수</div>
-            <div style={summaryValueStyle}>{items.length}</div>
-          </div>
-
-          <div style={summaryCardStyle}>
-            <div style={summaryLabelStyle}>부족/품절 품목</div>
-            <div style={summaryValueStyle}>{lowStockCount}</div>
-          </div>
-
-          <div style={summaryCardStyle}>
-            <div style={summaryLabelStyle}>시설자산/재고 총액</div>
-            <div style={summaryValueStyle}>
-              {totalAssetValue.toLocaleString()}원
-            </div>
-          </div>
-
-          <div style={summaryCardStyle}>
-            <div style={summaryLabelStyle}>관리 상태</div>
-            <div style={summaryValueStyle}>운영중</div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            background: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            marginBottom: "28px",
-            overflowX: "auto",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-            시설자산·재고 현황
-          </h2>
-
-          <p style={{ color: "#666", marginTop: 0, marginBottom: "16px" }}>
-            사용수량을 수정하면 잔량이 자동으로 계산됩니다.
-          </p>
-
-          <table
+        {!isMobile && (
+          <div
             style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              minWidth: "1400px",
+              background: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              overflowX: "auto",
             }}
           >
-            <thead>
-              <tr style={{ background: "#f1f5f9" }}>
-                <th style={thStyle}>구분</th>
-                <th style={thStyle}>품목명</th>
-                <th style={thStyle}>분류</th>
-                <th style={thStyle}>단가</th>
-                <th style={thStyle}>입고수량</th>
-                <th style={thStyle}>사용수량(수정 가능)</th>
-                <th style={thStyle}>잔량(자동 계산)</th>
-                <th style={thStyle}>보관위치</th>
-                <th style={thStyle}>사용처</th>
-                <th style={thStyle}>상태</th>
-              </tr>
-            </thead>
-            <tbody>
-              {items.map((item) => {
-                const remain = getRemain(item);
-                const autoStatus = getAutoStatus(item);
+            <h2 style={{ marginTop: 0, marginBottom: "16px" }}>세대 현황</h2>
 
-                return (
-                  <tr key={item.id}>
-                    <td style={tdStyle}>{item.type}</td>
-                    <td style={tdStyle}>{item.name}</td>
-                    <td style={tdStyle}>{item.category}</td>
-                    <td style={tdStyle}>{item.price.toLocaleString()}원</td>
-                    <td style={tdStyle}>{item.stockIn}</td>
-                    <td style={tdStyle}>
-                      <input
-                        type="number"
-                        min={0}
-                        max={item.stockIn}
-                        value={item.used}
-                        onChange={(e) => handleUsedChange(item.id, e.target.value)}
-                        style={smallInputStyle}
-                      />
-                    </td>
-                    <td style={tdStyle}>
-                      <strong>{remain}</strong>
-                    </td>
-                    <td style={tdStyle}>{item.location}</td>
-                    <td style={tdStyle}>{item.usage}</td>
+            <table
+              style={{
+                width: "100%",
+                borderCollapse: "collapse",
+                minWidth: "900px",
+              }}
+            >
+              <thead>
+                <tr style={{ background: "#f1f5f9" }}>
+                  <th style={thStyle}>동</th>
+                  <th style={thStyle}>호수</th>
+                  <th style={thStyle}>세대주/입주민</th>
+                  <th style={thStyle}>거주상태</th>
+                  <th style={thStyle}>입주일</th>
+                  <th style={thStyle}>퇴거일</th>
+                  <th style={thStyle}>비고</th>
+                </tr>
+              </thead>
+              <tbody>
+                {residents.map((item, index) => (
+                  <tr key={index}>
+                    <td style={tdStyle}>{item.building}</td>
+                    <td style={tdStyle}>{item.unit}</td>
+                    <td style={tdStyle}>{item.resident}</td>
                     <td style={tdStyle}>
                       <span
                         style={{
-                          ...getStatusStyle(autoStatus),
+                          ...getStatusStyle(item.status),
                           padding: "6px 10px",
                           borderRadius: "999px",
                           fontSize: "14px",
@@ -388,177 +176,62 @@ export default function InventoryPage() {
                           display: "inline-block",
                         }}
                       >
-                        {autoStatus}
+                        {item.status}
                       </span>
                     </td>
+                    <td style={tdStyle}>{item.moveIn}</td>
+                    <td style={tdStyle}>{item.moveOut}</td>
+                    <td style={tdStyle}>{item.note}</td>
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        <div
-          style={{
-            background: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>
-            시설자산·재고 등록
-          </h2>
-
-          <p style={{ color: "#666", marginTop: 0 }}>
-            입고수량과 사용수량을 입력하면 아래 잔량이 자동으로 계산됩니다.
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-              gap: "14px",
-            }}
-          >
-            <select name="type" value={form.type} onChange={handleFormChange} style={inputStyle}>
-              <option value="재고">재고</option>
-              <option value="시설자산">시설자산</option>
-            </select>
-
-            <input
-              name="name"
-              value={form.name}
-              onChange={handleFormChange}
-              placeholder="품목명"
-              style={inputStyle}
-            />
-
-            <input
-              name="category"
-              value={form.category}
-              onChange={handleFormChange}
-              placeholder="분류 (예: 전기자재, 소방자재)"
-              style={inputStyle}
-            />
-
-            <input
-              name="price"
-              type="number"
-              value={form.price}
-              onChange={handleFormChange}
-              placeholder="단가"
-              style={inputStyle}
-            />
-
-            <input
-              name="stockIn"
-              type="number"
-              value={form.stockIn}
-              onChange={handleFormChange}
-              placeholder="입고수량"
-              style={inputStyle}
-            />
-
-            <input
-              name="used"
-              type="number"
-              value={form.used}
-              onChange={handleFormChange}
-              placeholder="사용수량"
-              style={inputStyle}
-            />
-
-            <input
-              value={remainPreview}
-              readOnly
-              placeholder="잔량"
-              style={{
-                ...inputStyle,
-                background: "#f8fafc",
-                fontWeight: "bold",
-              }}
-            />
-
-            <input
-              name="location"
-              value={form.location}
-              onChange={handleFormChange}
-              placeholder="보관위치"
-              style={inputStyle}
-            />
-
-            <input
-              name="usage"
-              value={form.usage}
-              onChange={handleFormChange}
-              placeholder="사용처"
-              style={inputStyle}
-            />
-
-            <select
-              name="status"
-              value={form.status}
-              onChange={handleFormChange}
-              style={inputStyle}
-            >
-              <option value="정상">정상</option>
-              <option value="부족">부족</option>
-              <option value="운용중">운용중</option>
-              <option value="수리필요">수리필요</option>
-            </select>
-
-            <textarea
-              name="note"
-              value={form.note}
-              onChange={handleFormChange}
-              placeholder="비고"
-              style={{
-                ...inputStyle,
-                minHeight: "100px",
-                resize: "vertical",
-                gridColumn: "1 / -1",
-              }}
-            />
-
-            <button
-              onClick={handleAddItem}
-              style={{
-                gridColumn: "1 / -1",
-                padding: "12px 16px",
-                border: "none",
-                borderRadius: "8px",
-                background: "#2563eb",
-                color: "white",
-                fontWeight: "bold",
-                cursor: "pointer",
-              }}
-            >
-              시설자산·재고 정보 저장
-            </button>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </div>
+        )}
+
+        {isMobile && (
+          <div style={{ display: "grid", gap: "14px" }}>
+            {residents.map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  background: "white",
+                  borderRadius: "12px",
+                  padding: "16px",
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "8px" }}>
+                  {item.building} {item.unit}
+                </div>
+
+                <div style={mobileLineStyle}>세대주/입주민: {item.resident}</div>
+                <div style={mobileLineStyle}>
+                  거주상태:{" "}
+                  <span
+                    style={{
+                      ...getStatusStyle(item.status),
+                      padding: "4px 8px",
+                      borderRadius: "999px",
+                      fontSize: "13px",
+                      fontWeight: "bold",
+                      display: "inline-block",
+                    }}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+                <div style={mobileLineStyle}>입주일: {item.moveIn}</div>
+                <div style={mobileLineStyle}>퇴거일: {item.moveOut}</div>
+                <div style={mobileLineStyle}>비고: {item.note}</div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </main>
   );
 }
-
-const summaryCardStyle = {
-  background: "white",
-  borderRadius: "12px",
-  padding: "20px",
-  boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-};
-
-const summaryLabelStyle = {
-  color: "#666",
-  marginBottom: "8px",
-};
-
-const summaryValueStyle = {
-  fontSize: "28px",
-  fontWeight: "bold",
-};
 
 const thStyle = {
   border: "1px solid #ddd",
@@ -571,18 +244,8 @@ const tdStyle = {
   padding: "12px",
 };
 
-const inputStyle = {
-  padding: "10px",
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-  fontSize: "14px",
-  width: "100%",
-};
-
-const smallInputStyle = {
-  padding: "8px",
-  border: "1px solid #ccc",
-  borderRadius: "6px",
-  fontSize: "14px",
-  width: "90px",
+const mobileLineStyle = {
+  marginTop: "8px",
+  color: "#444",
+  lineHeight: 1.5,
 };

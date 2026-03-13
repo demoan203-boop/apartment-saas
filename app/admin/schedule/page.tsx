@@ -1,4 +1,17 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function AdminSchedulePage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const days = ["일", "월", "화", "수", "목", "금", "토"];
 
   const scheduleData = [
@@ -10,10 +23,6 @@ export default function AdminSchedulePage() {
     { day: 6, staff: "이점검", shift: "휴무", note: "-" },
     { day: 7, staff: "박민원", shift: "주간", note: "입주 안내" },
     { day: 8, staff: "최야간", shift: "야간", note: "순찰" },
-    { day: 9, staff: "김관리", shift: "주간", note: "관리업무" },
-    { day: 10, staff: "이점검", shift: "주간", note: "기계실 점검" },
-    { day: 11, staff: "박민원", shift: "휴무", note: "-" },
-    { day: 12, staff: "최야간", shift: "야간", note: "출입 통제" },
   ];
 
   return (
@@ -21,7 +30,7 @@ export default function AdminSchedulePage() {
       style={{
         minHeight: "100vh",
         background: "#f5f7fb",
-        padding: "40px",
+        padding: isMobile ? "20px" : "40px",
         fontFamily: "sans-serif",
       }}
     >
@@ -30,16 +39,18 @@ export default function AdminSchedulePage() {
           style={{
             display: "flex",
             justifyContent: "space-between",
-            alignItems: "center",
+            alignItems: isMobile ? "flex-start" : "center",
+            flexDirection: isMobile ? "column" : "row",
             marginBottom: "20px",
-            flexWrap: "wrap",
             gap: "12px",
           }}
         >
           <div>
-            <h1 style={{ margin: 0, fontSize: "32px" }}>근무 스케줄 관리</h1>
+            <h1 style={{ margin: 0, fontSize: isMobile ? "26px" : "32px" }}>
+              근무 스케줄 관리
+            </h1>
             <p style={{ color: "#555", marginTop: "8px" }}>
-              직원 근무, 휴무, 야간근무 일정을 달력 형태로 관리합니다.
+              직원 근무, 휴무, 야간근무 일정을 관리합니다.
             </p>
           </div>
 
@@ -58,84 +69,118 @@ export default function AdminSchedulePage() {
           </a>
         </div>
 
-        <div
-          style={{
-            background: "white",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-            marginBottom: "24px",
-          }}
-        >
-          <h2 style={{ marginTop: 0, marginBottom: "16px" }}>월간 스케줄</h2>
-
+        {!isMobile && (
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(7, 1fr)",
-              gap: "10px",
+              background: "white",
+              borderRadius: "12px",
+              padding: "24px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              marginBottom: "24px",
             }}
           >
-            {days.map((day) => (
-              <div
-                key={day}
-                style={{
-                  background: "#e2e8f0",
-                  padding: "12px",
-                  borderRadius: "8px",
-                  textAlign: "center",
-                  fontWeight: "bold",
-                }}
-              >
-                {day}
-              </div>
-            ))}
+            <h2 style={{ marginTop: 0, marginBottom: "16px" }}>월간 스케줄</h2>
 
-            {Array.from({ length: 31 }, (_, index) => {
-              const dayNumber = index + 1;
-              const daySchedule = scheduleData.filter((item) => item.day === dayNumber);
-
-              return (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(7, 1fr)",
+                gap: "10px",
+              }}
+            >
+              {days.map((day) => (
                 <div
-                  key={dayNumber}
+                  key={day}
                   style={{
-                    minHeight: "130px",
+                    background: "#e2e8f0",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {day}
+                </div>
+              ))}
+
+              {Array.from({ length: 31 }, (_, index) => {
+                const dayNumber = index + 1;
+                const daySchedule = scheduleData.filter((item) => item.day === dayNumber);
+
+                return (
+                  <div
+                    key={dayNumber}
+                    style={{
+                      minHeight: "130px",
+                      background: "#f8fafc",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: "10px",
+                      padding: "10px",
+                    }}
+                  >
+                    <div style={{ fontWeight: "bold", marginBottom: "8px" }}>{dayNumber}일</div>
+
+                    {daySchedule.length === 0 ? (
+                      <div style={{ fontSize: "13px", color: "#999" }}>일정 없음</div>
+                    ) : (
+                      daySchedule.map((item, idx) => (
+                        <div
+                          key={idx}
+                          style={{
+                            background: "white",
+                            padding: "8px",
+                            borderRadius: "8px",
+                            fontSize: "13px",
+                            marginBottom: "6px",
+                            border: "1px solid #ddd",
+                          }}
+                        >
+                          <div style={{ fontWeight: "bold" }}>{item.staff}</div>
+                          <div>{item.shift}</div>
+                          <div style={{ color: "#666" }}>{item.note}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {isMobile && (
+          <div
+            style={{
+              background: "white",
+              borderRadius: "12px",
+              padding: "20px",
+              boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
+              marginBottom: "24px",
+            }}
+          >
+            <h2 style={{ marginTop: 0, marginBottom: "16px" }}>일정 목록</h2>
+
+            <div style={{ display: "grid", gap: "12px" }}>
+              {scheduleData.map((item, idx) => (
+                <div
+                  key={idx}
+                  style={{
                     background: "#f8fafc",
                     border: "1px solid #e5e7eb",
                     borderRadius: "10px",
-                    padding: "10px",
+                    padding: "14px",
                   }}
                 >
-                  <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
-                    {dayNumber}일
+                  <div style={{ fontWeight: "bold", fontSize: "17px", marginBottom: "6px" }}>
+                    {item.day}일 - {item.staff}
                   </div>
-
-                  {daySchedule.length === 0 ? (
-                    <div style={{ fontSize: "13px", color: "#999" }}>일정 없음</div>
-                  ) : (
-                    daySchedule.map((item, idx) => (
-                      <div
-                        key={idx}
-                        style={{
-                          background: "white",
-                          padding: "8px",
-                          borderRadius: "8px",
-                          fontSize: "13px",
-                          marginBottom: "6px",
-                          border: "1px solid #ddd",
-                        }}
-                      >
-                        <div style={{ fontWeight: "bold" }}>{item.staff}</div>
-                        <div>{item.shift}</div>
-                        <div style={{ color: "#666" }}>{item.note}</div>
-                      </div>
-                    ))
-                  )}
+                  <div style={mobileLineStyle}>근무형태: {item.shift}</div>
+                  <div style={mobileLineStyle}>배치/업무: {item.note}</div>
                 </div>
-              );
-            })}
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         <div
           style={{
@@ -150,7 +195,9 @@ export default function AdminSchedulePage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+              gridTemplateColumns: isMobile
+                ? "1fr"
+                : "repeat(auto-fit, minmax(220px, 1fr))",
               gap: "12px",
             }}
           >
@@ -169,7 +216,7 @@ export default function AdminSchedulePage() {
 
             <button
               style={{
-                gridColumn: "1 / -1",
+                gridColumn: isMobile ? "auto" : "1 / -1",
                 padding: "12px 16px",
                 border: "none",
                 borderRadius: "8px",
@@ -194,4 +241,10 @@ const inputStyle = {
   borderRadius: "8px",
   fontSize: "14px",
   width: "100%",
+};
+
+const mobileLineStyle = {
+  marginTop: "8px",
+  color: "#444",
+  lineHeight: 1.5,
 };
